@@ -10,16 +10,16 @@ public class UrlRepository : IUrlRepository
             "portfolio", new UrlMapping
             {
                 Id = Guid.NewGuid(),
-                TargetUrl = "portfolio",
-                UrlMap = @"http://github.com/codyskidmore"
+                ShortName = "portfolio",
+                ForwardTo = @"http://github.com/codyskidmore"
             }
         },
         {
             "profile", new UrlMapping
             {
                 Id = Guid.NewGuid(),
-                TargetUrl = "profile",
-                UrlMap = @"https://www.linkedin.com/in/codyskidmore/"
+                ShortName = "profile",
+                ForwardTo = @"https://www.linkedin.com/in/codyskidmore/"
             }
         }
     };
@@ -27,5 +27,10 @@ public class UrlRepository : IUrlRepository
     public Task<UrlMapping> GetAsync(string map)
     {
         return Task.FromResult(_urlMaps[map]);
+    }
+
+    public Task<IEnumerable<UrlMapping>> GetAllAsync()
+    {
+        return Task.FromResult<IEnumerable<UrlMapping>>(_urlMaps.Values.ToList());
     }
 }

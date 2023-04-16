@@ -10,7 +10,7 @@ public static class CreateUrlEndpoint
 {
     public const string Name = "CreateUrl";
 
-    public static IEndpointRouteBuilder MapCreateUrl(this IEndpointRouteBuilder app)
+    public static IEndpointRouteBuilder MapCreateUrlMap(this IEndpointRouteBuilder app)
     {
         app.MapPost("/", async ([FromHeader] string authHeader, CreateUrlRequest request, IUrlService urlService) =>
             {

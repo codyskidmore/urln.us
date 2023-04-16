@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Movies.Api.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Url.Api.Data;
+using Url.Api.Models;
 using Url.Api.Services;
 
 namespace Url.Api.Infrastructure;
@@ -53,6 +54,20 @@ public static class UrlConfiguration
     public static IServiceCollection AddUrlApiRepositories(this IServiceCollection services)
     {
         services.AddTransient<IUrlRepository, UrlRepository>();
+        return services;
+    }
+    
+    public static IServiceCollection AddMovieApiCache(this IServiceCollection services, CacheSettings cacheSettings)
+    {
+        services.AddOutputCache(x =>
+        {
+            x.AddBasePolicy(c => c.Cache());
+            x.AddPolicy(cacheSettings.PolicyName, c => 
+                c.Cache()
+                    .Expire(TimeSpan.FromMinutes(cacheSettings.Expiration))
+                    .SetVaryByQuery(cacheSettings.QueryKeys)
+                    .Tag(cacheSettings.TagName));
+        });
         return services;
     }
 }

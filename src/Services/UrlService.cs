@@ -17,9 +17,13 @@ public class UrlService : IUrlService
         throw new NotImplementedException();
     }
 
-    public async Task<string> GetAsync(string map)
+    public async Task<UrlMapping> GetAsync(string map)
     {
-        var urlMap = await _urlRepository.GetAsync(map);
-        return urlMap.UrlMap;
+        return await _urlRepository.GetAsync(map);
+    }
+
+    public Task<IEnumerable<UrlMapping>> GetAllAsync()
+    {
+        return _urlRepository.GetAllAsync();
     }
 }
