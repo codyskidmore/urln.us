@@ -6,9 +6,11 @@ public static class EndpointConfiguration
 {
     public static IEndpointRouteBuilder MapApiEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGetUrlMap();
-        app.MapUrlGetAllUrlMaps();
-        app.MapCreateUrlMap();
+        app.MapGet();
+        app.MapGetAll();
+        app.MapCreate();
+        app.MapPut();
+        app.MapDelete();
         return app;
     }
 }

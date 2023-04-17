@@ -4,12 +4,11 @@ namespace Url.Api.Data;
 
 public class UrlRepository : IUrlRepository
 {
-    private Dictionary<string, UrlMapping> _urlMaps = new Dictionary<string, UrlMapping>
+    private static readonly Dictionary<string, UrlMapping> _urlMaps = new Dictionary<string, UrlMapping>
     {
         {
             "portfolio", new UrlMapping
             {
-                Id = Guid.NewGuid(),
                 ShortName = "portfolio",
                 ForwardTo = @"http://github.com/codyskidmore"
             }
@@ -17,7 +16,6 @@ public class UrlRepository : IUrlRepository
         {
             "profile", new UrlMapping
             {
-                Id = Guid.NewGuid(),
                 ShortName = "profile",
                 ForwardTo = @"https://www.linkedin.com/in/codyskidmore/"
             }
@@ -32,5 +30,35 @@ public class UrlRepository : IUrlRepository
     public Task<IEnumerable<UrlMapping>> GetAllAsync()
     {
         return Task.FromResult<IEnumerable<UrlMapping>>(_urlMaps.Values.ToList());
+    }
+
+    public Task<UrlMapping> UpdateAsync(string shortName, string forwardTo, string description)
+    {
+        var urlMapping = _urlMaps[shortName];
+        urlMapping.ForwardTo = forwardTo;
+        urlMapping.Description = description;
+        
+        _urlMaps[shortName] = urlMapping;
+
+        return Task.FromResult(urlMapping);
+    }
+
+    public Task DeleteAsync(string map)
+    {
+       return  Task.FromResult(_urlMaps.Remove(map));
+    }
+
+    public Task<UrlMapping> CreateAsync(string shortName, string forwardTo, string description)
+    {
+        var urlMapping = new UrlMapping
+        {
+            ForwardTo = forwardTo,
+            ShortName = shortName,
+            Description = description
+        };
+        
+        _urlMaps[shortName] = urlMapping;
+        
+        return Task.FromResult(urlMapping);
     }
 }

@@ -4,7 +4,9 @@ namespace Url.Api.Services;
 
 public interface IUrlService
 {
-    Task<bool> CreateAsync(CreateUrlRequest request);
+    Task<UrlMapping> CreateAsync(UrlMapRequest request);
+    Task<UrlMapping> UpdateAsync(UrlMapRequest request);
     Task<UrlMapping> GetAsync(string map);
     Task<IEnumerable<UrlMapping>> GetAllAsync();
+    Task DeleteAsync(string map);
 }

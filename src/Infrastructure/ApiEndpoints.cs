@@ -9,7 +9,9 @@ public class ApiEndpoints
         private const string Base = $"{ApiBase}";
         
         public const string Create = Base;
-        public const string GetMap =  $"{Base}{{ShortName}}";
-        public const string GetAllMaps =  Base;
+        public const string Get =  $"{Base}{{ShortName}}";
+        public const string GetAll =  Base;
+        public const string Put =  Base;
+        public const string Delete =  $"{Base}{{ShortName}}";
     }
 }

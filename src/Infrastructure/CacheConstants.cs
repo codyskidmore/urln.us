@@ -2,5 +2,7 @@
 
 public static class CacheConstants
 {
-    public const string CachePolicySection = "CachePolicy";
+    public const string PolicySection = "CachePolicy";
+    public const string PolicyName = "UrlMapCache";
+    public const string TagName = "UrlMapTag";
 }

@@ -12,9 +12,14 @@ public class UrlService : IUrlService
         _urlRepository = urlRepository;
     }
 
-    public Task<bool> CreateAsync(CreateUrlRequest request)
+    public Task<UrlMapping> CreateAsync(UrlMapRequest request)
     {
-        throw new NotImplementedException();
+        return _urlRepository.CreateAsync(request.ShortName, request.ForwardTo, request.Description);
+    }
+
+    public Task<UrlMapping> UpdateAsync(UrlMapRequest request)
+    {
+        return _urlRepository.UpdateAsync(request.ShortName, request.ForwardTo, request.Description);
     }
 
     public async Task<UrlMapping> GetAsync(string map)
@@ -25,5 +30,10 @@ public class UrlService : IUrlService
     public Task<IEnumerable<UrlMapping>> GetAllAsync()
     {
         return _urlRepository.GetAllAsync();
+    }
+
+    public Task DeleteAsync(string map)
+    {
+        return Task.FromResult(_urlRepository.DeleteAsync(map));
     }
 }

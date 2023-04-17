@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Movies.Api.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Url.Api.Data;
+using Url.Api.Endpoints;
 using Url.Api.Models;
 using Url.Api.Services;
 
@@ -16,7 +17,7 @@ public static class UrlConfiguration
         services.AddSwaggerGen(x => x.OperationFilter<SwaggerDefaultValues>());
         return services;
     }
-    public static IServiceCollection AddMovieApiVersioning(this IServiceCollection services)
+    public static IServiceCollection AddUrlMapApiVersioning(this IServiceCollection services)
     {
         services.AddApiVersioning(x =>
         {
@@ -57,17 +58,44 @@ public static class UrlConfiguration
         return services;
     }
     
-    public static IServiceCollection AddMovieApiCache(this IServiceCollection services, CacheSettings cacheSettings)
+    public static IServiceCollection AddUrlMapCache(this IServiceCollection services, CacheSettings cacheSettings)
     {
         services.AddOutputCache(x =>
         {
             x.AddBasePolicy(c => c.Cache());
-            x.AddPolicy(cacheSettings.PolicyName, c => 
-                c.Cache()
-                    .Expire(TimeSpan.FromMinutes(cacheSettings.Expiration))
-                    .SetVaryByQuery(cacheSettings.QueryKeys)
-                    .Tag(cacheSettings.TagName));
+             x.AddPolicy(cacheSettings.PolicyName, c => 
+                 c.Cache()
+                     .Expire(TimeSpan.FromMinutes(cacheSettings.Expiration))
+                     .SetVaryByQuery(cacheSettings.QueryKeys)
+                     .Tag(cacheSettings.TagName));
         });
         return services;
     }
+
+    public static IServiceCollection AddCorsPolicy(this IServiceCollection services)
+    {
+        services.AddCors(options =>
+        {
+            options.AddPolicy(name: "corsPolicy", p =>
+            {
+                p.WithOrigins("http://localhost:5001/", "https://localhost:5001/", "https://urln.us/")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
+        
+        return services;
+    }
+    // public static IServiceCollection AddMUrlApiAuthentication(this IServiceCollection services, IConfigurationRoot config)
+    // {
+    //
+    //     services.AddAuthorization(x =>
+    //     {
+    //         x.AddPolicy(AppConstants.AdminUserPolicyName,
+    //             // This adds multiple authorization types (API Key, credentials, etc.
+    //             p => p.AddRequirements(new AdminAuthRequirement(config["ApiKey"]!)));
+    //     });
+    //
+    //     return services;
+    // }
 }

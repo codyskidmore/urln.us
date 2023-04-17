@@ -3,10 +3,14 @@ using Url.Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
+//builder.Services.AddMUrlApiAuthentication(config);
 
-var cacheConfig = config.GetSection(CacheConstants.CachePolicySection).Get<CacheSettings>();
-builder.Services.AddMovieApiCache(cacheConfig!);
-builder.Services.AddMovieApiVersioning();
+//builder.Services.AddScoped<ApiKeyAuthFilter>();
+var cacheConfig = config.GetSection(CacheConstants.PolicySection).Get<CacheSettings>();
+
+//builder.Services.AddCorsPolicy();
+builder.Services.AddUrlMapCache(cacheConfig!);
+builder.Services.AddUrlMapApiVersioning();
 builder.Services.Configure<ConfigOptions>(
 builder.Configuration.GetSection(ConfigOptions.SectionName));
 builder.Services.AddUrlApiSwaggerOptions();
@@ -15,8 +19,6 @@ builder.Services.AddUrlApiRepositories();
 
 var app = builder.Build();
 
-app.UseOutputCache();
-app.MapApiEndpoints();
 
 //Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -25,4 +27,10 @@ if (app.Environment.IsDevelopment())
     app.UseUrlApiSwaggerUi();
 }
 
+app.UseOutputCache();
+// app.UseAuthentication();
+// app.UseAuthorization();
+app.MapApiEndpoints();
+app.UseMiddleware<ApiKeyMiddleware>();
+//app.UseCors("corsPolicy");
 app.Run();

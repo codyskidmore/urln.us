@@ -4,13 +4,13 @@ using Url.Api.Services;
 
 namespace Url.Api.Endpoints;
 
-public static class GetUrlMapEndpoint
+public static class Get
 {
-    public const string Name = "GetUrlMap";
+    public const string Name = "Get";
 
-    public static IEndpointRouteBuilder MapGetUrlMap(this IEndpointRouteBuilder app)
+    public static IEndpointRouteBuilder MapGet(this IEndpointRouteBuilder app)
     {
-        app.MapGet(ApiEndpoints.Urls.GetMap, async (string shortName, IUrlService urlService) =>
+        app.MapGet(ApiEndpoints.Urls.Get, async (string shortName, IUrlService urlService) =>
         {
             var mappedUrl = await urlService.GetAsync(shortName);
             if (mappedUrl is null)
@@ -20,9 +20,9 @@ public static class GetUrlMapEndpoint
 
             return TypedResults.Redirect(mappedUrl.ForwardTo);
         }).WithName(Name)
-            .Produces<string>(StatusCodes.Status200OK)
+            .Produces<string>(StatusCodes.Status302Found)
             .Produces(StatusCodes.Status404NotFound)
-            .CacheOutput(Name);
+            .CacheOutput(CacheConstants.PolicyName);
 
         return app;
     }}
