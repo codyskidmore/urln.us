@@ -1,4 +1,5 @@
 using Url.Api.Data;
+using Url.Api.Infrastructure;
 using Url.Api.Models;
 
 namespace Url.Api.Services;
@@ -12,28 +13,33 @@ public class UrlService : IUrlService
         _urlRepository = urlRepository;
     }
 
-    public Task<UrlMapping> CreateAsync(UrlMapRequest request)
+    public async Task<UrlMapping> CreateAsync(UrlMapRequest request)
     {
-        return _urlRepository.CreateAsync(request.ShortName, request.ForwardTo, request.Description);
+        var urlEntity = await _urlRepository.CreateAsync(request.ShortName, request.ForwardTo, request.Description);
+        return urlEntity.ToUrlMapping();
     }
 
-    public Task<UrlMapping> UpdateAsync(UrlMapRequest request)
+    public async Task<UrlMapping> UpdateAsync(UrlMapRequest request)
     {
-        return _urlRepository.UpdateAsync(request.ShortName, request.ForwardTo, request.Description);
+        var urlMapping = await _urlRepository.UpdateAsync(request.ShortName, request.ForwardTo, request.Description);
+        
+        return urlMapping.ToUrlMapping();
     }
 
-    public async Task<UrlMapping> GetAsync(string map)
+    public async Task<UrlMapping> GetAsync(string shortName)
     {
-        return await _urlRepository.GetAsync(map);
+        var mapEntity = await _urlRepository.GetAsync(shortName);
+        return mapEntity.ToUrlMapping();
     }
 
-    public Task<IEnumerable<UrlMapping>> GetAllAsync()
+    public async Task<IEnumerable<UrlMapping>> GetAllAsync()
     {
-        return _urlRepository.GetAllAsync();
+        var urlEntities = await _urlRepository.GetAllAsync();
+        return urlEntities.ToUrlMappings();
     }
 
-    public Task DeleteAsync(string map)
+    public async Task DeleteAsync(string shortName)
     {
-        return Task.FromResult(_urlRepository.DeleteAsync(map));
+        await _urlRepository.DeleteAsync(shortName);
     }
 }

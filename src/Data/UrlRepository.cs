@@ -1,64 +1,60 @@
+using Microsoft.EntityFrameworkCore;
 using Url.Api.Models;
 
 namespace Url.Api.Data;
 
 public class UrlRepository : IUrlRepository
 {
-    private static readonly Dictionary<string, UrlMapping> _urlMaps = new Dictionary<string, UrlMapping>
+    private UrlDbContext _dbContext { get; }
+
+    public UrlRepository(UrlDbContext dbContext)
     {
-        {
-            "portfolio", new UrlMapping
-            {
-                ShortName = "portfolio",
-                ForwardTo = @"http://github.com/codyskidmore"
-            }
-        },
-        {
-            "profile", new UrlMapping
-            {
-                ShortName = "profile",
-                ForwardTo = @"https://www.linkedin.com/in/codyskidmore/"
-            }
-        }
-    };
-    
-    public Task<UrlMapping> GetAsync(string map)
-    {
-        return Task.FromResult(_urlMaps[map]);
+        _dbContext = dbContext;
     }
 
-    public Task<IEnumerable<UrlMapping>> GetAllAsync()
+    public async Task<UrlEntity> GetAsync(string shortName)
     {
-        return Task.FromResult<IEnumerable<UrlMapping>>(_urlMaps.Values.ToList());
+        return await _dbContext.UrlEntities.AsNoTracking().SingleAsync(m => m.ShortName == shortName);
     }
 
-    public Task<UrlMapping> UpdateAsync(string shortName, string forwardTo, string description)
+    public async Task<IEnumerable<UrlEntity>> GetAllAsync()
     {
-        var urlMapping = _urlMaps[shortName];
-        urlMapping.ForwardTo = forwardTo;
-        urlMapping.Description = description;
+        return await _dbContext.UrlEntities.AsNoTracking().ToListAsync();
+    }
+
+    public async Task<UrlEntity> UpdateAsync(string shortName, string forwardTo, string description)
+    {
+        var map = await _dbContext.UrlEntities.SingleAsync(m => m.ShortName == shortName);;
+        map.Description = description;
+        map.ForwardTo = forwardTo;
+
+        await _dbContext.SaveChangesAsync();
+
+        return map;
+    }
+
+    public async Task DeleteAsync(string shortName)
+    {
+
+        var map = await _dbContext.UrlEntities.SingleAsync(m => m.ShortName == shortName);
+        _dbContext.UrlEntities.Remove(map);
         
-        _urlMaps[shortName] = urlMapping;
-
-        return Task.FromResult(urlMapping);
+        await _dbContext.SaveChangesAsync();
     }
 
-    public Task DeleteAsync(string map)
+    public async Task<UrlEntity> CreateAsync(string shortName, string forwardTo, string description)
     {
-       return  Task.FromResult(_urlMaps.Remove(map));
-    }
-
-    public Task<UrlMapping> CreateAsync(string shortName, string forwardTo, string description)
-    {
-        var urlMapping = new UrlMapping
+        var urlEntity = new UrlEntity
         {
+            Id = Guid.NewGuid(),
             ForwardTo = forwardTo,
             ShortName = shortName,
             Description = description
         };
-        
-        _urlMaps[shortName] = urlMapping;
-        
-        return Task.FromResult(urlMapping);
+
+        await _dbContext.AddAsync(urlEntity);
+        await _dbContext.SaveChangesAsync();
+
+        return urlEntity;
     }
 }
