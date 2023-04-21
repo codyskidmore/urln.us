@@ -1,25 +1,14 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Url.Api.Data;
 using Url.Api.Infrastructure;
 using Url.Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
-//builder.Services.AddMUrlApiAuthentication(config);
 
-//builder.Services.AddScoped<ApiKeyAuthFilter>();
 var cacheConfig = config.GetSection(CacheConstants.PolicySection).Get<CacheSettings>();
-//var dbConfig = config.GetSection(DatabaseOptions.SectionName).Get<DatabaseOptions>();
 
-builder.Services.Configure<DatabaseOptions>(
-     builder.Configuration.GetSection(DatabaseOptions.SectionName));
-
-//builder.Services.AddDbContext<UrlDbContext>(options => options.UseSqlite(dbConfig.ConnectionString));
-//builder.Services.AddDbContext<UrlDbContext>(options => options.UseSqlite());
-builder.Services.AddDbContext<UrlDbContext>();
-
-builder.Services.AddCorsPolicy();
+builder.Services.AddDatabase(config);
 
 builder.Services.AddUrlMapCache(cacheConfig!);
 builder.Services.AddUrlMapApiVersioning();
@@ -33,16 +22,28 @@ var app = builder.Build();
 
 
 //Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseUrlApiSwaggerUi();
-}
+// if (app.Environment.IsDevelopment())
+// {
+//     app.UseSwagger();
+//     app.UseUrlApiSwaggerUi();
+// }
 
-// app.UseAuthentication();
-// app.UseAuthorization();
+app.UseSwagger();
+app.UseUrlApiSwaggerUi();
+
+
 app.MapApiEndpoints();
 app.UseMiddleware<ApiKeyMiddleware>();
-//app.UseCors("corsPolicy");
 app.UseOutputCache();
+
+// Migrate latest database changes during startup
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider
+        .GetRequiredService<UrlDbContext>();
+    
+    // Here is the migration executed
+    dbContext.Database.Migrate();
+}
+
 app.Run();

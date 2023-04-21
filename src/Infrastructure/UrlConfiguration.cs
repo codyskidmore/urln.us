@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using Movies.Api.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Url.Api.Data;
-using Url.Api.Endpoints;
 using Url.Api.Models;
 using Url.Api.Services;
 
@@ -11,6 +10,14 @@ namespace Url.Api.Infrastructure;
 
 public static class UrlConfiguration
 {
+    public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration config)
+    {
+        services.Configure<DatabaseOptions>(
+            config.GetSection(DatabaseOptions.SectionName));
+        services.AddDbContext<UrlDbContext>();
+        
+        return services;
+    }
     public static IServiceCollection AddUrlApiSwaggerOptions(this IServiceCollection services)
     {
         services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
@@ -47,7 +54,6 @@ public static class UrlConfiguration
 
     public static IServiceCollection AddUrlApiServices(this IServiceCollection services)
     {
-        services.AddTransient<IAuthService, AuthService>();
         services.AddTransient<IUrlService, UrlService>();
         return services;
     }
@@ -86,16 +92,4 @@ public static class UrlConfiguration
         
         return services;
     }
-    // public static IServiceCollection AddMUrlApiAuthentication(this IServiceCollection services, IConfigurationRoot config)
-    // {
-    //
-    //     services.AddAuthorization(x =>
-    //     {
-    //         x.AddPolicy(AppConstants.AdminUserPolicyName,
-    //             // This adds multiple authorization types (API Key, credentials, etc.
-    //             p => p.AddRequirements(new AdminAuthRequirement(config["ApiKey"]!)));
-    //     });
-    //
-    //     return services;
-    // }
 }

@@ -3,12 +3,16 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+ENV DOTNET_URLS=http://+:80
+
+VOLUME /Database
+
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["./Url.Api.csproj", "Url.Api/"]
+COPY ["./Url.Api.csproj", "./"]
 RUN dotnet restore "./Url.Api.csproj"
 COPY . .
-WORKDIR "/src/Url.Api"
+WORKDIR "/src"
 RUN dotnet build "Url.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish

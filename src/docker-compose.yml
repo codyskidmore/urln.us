@@ -1,0 +1,18 @@
+version: '3.9'
+services:
+  url:
+    image: urln
+    container_name: 'urln.us'
+    ports:
+      - '80:80'
+      - '444:443'
+    volumes: 
+        - './Database:/app/Database'
+        - './cert/:/app/cert'
+    environment: 
+        - ASPNETCORE_ENVIRONMENT=Production
+        - ASPNETCORE_URLS=http://+:80;https://+:443
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=crypticpassword
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=./cert/aspnetapp.pfx
+    entrypoint: 
+        ["dotnet", "Url.Api.dll"]  
