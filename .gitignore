@@ -351,3 +351,7 @@ MigrationBackup/
 
 appsettings.*
 .idea/
+
+docker-compose.yml
+Database/
+certificate/
