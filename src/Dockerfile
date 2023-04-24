@@ -3,7 +3,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-ENV DOTNET_URLS=http://+:80
+ENV DOTNET_URLS=http://+:80;https://+:443
 
 VOLUME /Database
 
