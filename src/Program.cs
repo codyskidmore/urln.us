@@ -12,8 +12,7 @@ builder.Services.AddDatabase(config);
 
 builder.Services.AddUrlMapCache(cacheConfig!);
 builder.Services.AddUrlMapApiVersioning();
-builder.Services.Configure<ConfigOptions>(
-builder.Configuration.GetSection(ConfigOptions.SectionName));
+builder.Services.Configure<ConfigOptions>(builder.Configuration.GetSection(ConfigOptions.SectionName));
 builder.Services.AddUrlApiSwaggerOptions();
 builder.Services.AddUrlApiServices();
 builder.Services.AddUrlApiRepositories();
