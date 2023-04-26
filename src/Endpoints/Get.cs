@@ -1,4 +1,3 @@
-using Url.Api.Data;
 using Url.Api.Infrastructure;
 using Url.Api.Services;
 
@@ -11,18 +10,16 @@ public static class Get
     public static IEndpointRouteBuilder MapGet(this IEndpointRouteBuilder app)
     {
         app.MapGet(ApiEndpoints.Urls.Get, async (string shortName, IUrlService urlService) =>
-        {
-            var mappedUrl = await urlService.GetAsync(shortName);
-            if (mappedUrl is null)
             {
-                return Results.NotFound();
-            }
+                var mappedUrl = await urlService.GetAsync(shortName);
+                if (mappedUrl is null) return Results.NotFound();
 
-            return TypedResults.Redirect(mappedUrl.ForwardTo);
-        }).WithName(Name)
+                return TypedResults.Redirect(mappedUrl.ForwardTo);
+            }).WithName(Name)
             .Produces<string>(StatusCodes.Status302Found)
             .Produces(StatusCodes.Status404NotFound)
             .CacheOutput(CacheConstants.PolicyName);
 
         return app;
-    }}
+    }
+}

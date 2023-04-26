@@ -14,11 +14,12 @@ public static class ModelMappings
             Description = entity.Description
         };
     }
+
     public static IEnumerable<UrlMapping> ToUrlMappings(this IEnumerable<UrlEntity> entities)
     {
-        return entities.Select<UrlEntity,UrlMapping>(m => m.ToUrlMapping());
+        return entities.Select<UrlEntity, UrlMapping>(m => m.ToUrlMapping());
     }
-    
+
     public static UrlMapResponse ToResponse(this UrlMapping urlMapping)
     {
         return new UrlMapResponse
@@ -31,6 +32,6 @@ public static class ModelMappings
 
     public static IEnumerable<UrlMapResponse> ToResponses(this IEnumerable<UrlMapping> urlMappings)
     {
-        return urlMappings.Select<UrlMapping,UrlMapResponse>(m => m.ToResponse());
+        return urlMappings.Select<UrlMapping, UrlMapResponse>(m => m.ToResponse());
     }
 }

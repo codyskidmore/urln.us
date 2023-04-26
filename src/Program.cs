@@ -12,7 +12,6 @@ builder.Services.AddDatabase(config);
 
 builder.Services.AddUrlMapCache(cacheConfig!);
 builder.Services.AddUrlMapApiVersioning();
-builder.Services.Configure<ConfigOptions>(builder.Configuration.GetSection(ConfigOptions.SectionName));
 builder.Services.AddUrlApiSwaggerOptions();
 builder.Services.AddUrlApiServices();
 builder.Services.AddUrlApiRepositories();
@@ -32,6 +31,7 @@ app.UseUrlApiSwaggerUi();
 
 
 app.MapApiEndpoints();
+app.UseMiddleware<EnrichLogMiddleware>();
 app.UseMiddleware<ApiKeyMiddleware>();
 app.UseOutputCache();
 
@@ -40,7 +40,7 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider
         .GetRequiredService<UrlDbContext>();
-    
+
     // Here is the migration executed
     dbContext.Database.Migrate();
 }

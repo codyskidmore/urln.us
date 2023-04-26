@@ -6,13 +6,13 @@ services:
     ports:
       - '94:80'
       - '447:443'
-    volumes: 
-        - './Database:/app/Database'
-        - './cert/:/app/cert'
-    environment: 
-        - ASPNETCORE_ENVIRONMENT=Production
-        - ASPNETCORE_URLS=http://+;https://+
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=<my-cert-password>
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=./cert/domain.pfx
-    entrypoint: 
-        ["dotnet", "Url.Api.dll"]  
+    volumes:
+      - './Database:/app/Database'
+      - './cert/:/app/cert'
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+;https://+
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=<my-cert-password>
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=./cert/domain.pfx
+    entrypoint:
+      [ "dotnet", "Url.Api.dll" ]  

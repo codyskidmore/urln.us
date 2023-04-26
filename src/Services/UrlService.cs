@@ -22,14 +22,14 @@ public class UrlService : IUrlService
     public async Task<UrlMapping> UpdateAsync(UrlMapRequest request)
     {
         var urlMapping = await _urlRepository.UpdateAsync(request.ShortName, request.ForwardTo, request.Description);
-        
-        return urlMapping.ToUrlMapping();
+
+        return urlMapping?.ToUrlMapping();
     }
 
     public async Task<UrlMapping> GetAsync(string shortName)
     {
         var mapEntity = await _urlRepository.GetAsync(shortName);
-        return mapEntity.ToUrlMapping();
+        return mapEntity?.ToUrlMapping();
     }
 
     public async Task<IEnumerable<UrlMapping>> GetAllAsync()
