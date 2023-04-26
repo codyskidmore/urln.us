@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Options;
 using Movies.Api.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -15,15 +16,17 @@ public static class UrlConfiguration
         services.Configure<DatabaseOptions>(
             config.GetSection(DatabaseOptions.SectionName));
         services.AddDbContext<UrlDbContext>();
-        
+
         return services;
     }
+
     public static IServiceCollection AddUrlApiSwaggerOptions(this IServiceCollection services)
     {
         services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
         services.AddSwaggerGen(x => x.OperationFilter<SwaggerDefaultValues>());
         return services;
     }
+
     public static IServiceCollection AddUrlMapApiVersioning(this IServiceCollection services)
     {
         services.AddApiVersioning(x =>
@@ -35,19 +38,17 @@ public static class UrlConfiguration
         }).AddApiExplorer();
 
         services.AddEndpointsApiExplorer();
-        
+
         return services;
     }
-    
+
     public static WebApplication UseUrlApiSwaggerUi(this WebApplication app)
     {
         app.UseSwaggerUI(x =>
         {
             foreach (var description in app.DescribeApiVersions())
-            {
-                x.SwaggerEndpoint( $"/swagger/{description.GroupName}/swagger.json",
+                x.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
                     description.GroupName);
-            }
         });
         return app;
     }
@@ -63,17 +64,17 @@ public static class UrlConfiguration
         services.AddTransient<IUrlRepository, UrlRepository>();
         return services;
     }
-    
+
     public static IServiceCollection AddUrlMapCache(this IServiceCollection services, CacheSettings cacheSettings)
     {
         services.AddOutputCache(x =>
         {
             x.AddBasePolicy(c => c.Cache());
-             x.AddPolicy(cacheSettings.PolicyName, c => 
-                 c.Cache()
-                     .Expire(TimeSpan.FromMinutes(cacheSettings.Expiration))
-                     .SetVaryByQuery(cacheSettings.QueryKeys)
-                     .Tag(cacheSettings.TagName));
+            x.AddPolicy(cacheSettings.PolicyName, c =>
+                c.Cache()
+                    .Expire(TimeSpan.FromMinutes(cacheSettings.Expiration))
+                    .SetVaryByQuery(cacheSettings.QueryKeys)
+                    .Tag(cacheSettings.TagName));
         });
         return services;
     }
@@ -82,14 +83,24 @@ public static class UrlConfiguration
     {
         services.AddCors(options =>
         {
-            options.AddPolicy(name: "corsPolicy", p =>
+            options.AddPolicy("corsPolicy", p =>
             {
                 p.WithOrigins("http://localhost:5001/", "https://localhost:5001/", "https://urln.us/")
                     .AllowAnyHeader()
                     .AllowAnyMethod();
             });
         });
-        
+
+        return services;
+    }
+
+    public static IServiceCollection AddForwardHeader(this IServiceCollection services)
+    {
+        services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+        });
+
         return services;
     }
 }

@@ -1,20 +1,19 @@
 using Microsoft.EntityFrameworkCore;
-using Url.Api.Models;
 
 namespace Url.Api.Data;
 
 public class UrlRepository : IUrlRepository
 {
-    private UrlDbContext _dbContext { get; }
-
     public UrlRepository(UrlDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public async Task<UrlEntity> GetAsync(string shortName)
+    private UrlDbContext _dbContext { get; }
+
+    public async Task<UrlEntity?> GetAsync(string shortName)
     {
-        return await _dbContext.UrlEntities.AsNoTracking().SingleAsync(m => m.ShortName == shortName);
+        return await _dbContext.UrlEntities.AsNoTracking().SingleOrDefaultAsync(m => m.ShortName == shortName);
     }
 
     public async Task<IEnumerable<UrlEntity>> GetAllAsync()
@@ -22,9 +21,12 @@ public class UrlRepository : IUrlRepository
         return await _dbContext.UrlEntities.AsNoTracking().ToListAsync();
     }
 
-    public async Task<UrlEntity> UpdateAsync(string shortName, string forwardTo, string description)
+    public async Task<UrlEntity?> UpdateAsync(string shortName, string forwardTo, string description)
     {
-        var map = await _dbContext.UrlEntities.SingleAsync(m => m.ShortName == shortName);;
+        var map = await _dbContext.UrlEntities.SingleOrDefaultAsync(m => m.ShortName == shortName);
+
+        if (map == null) return null;
+
         map.Description = description;
         map.ForwardTo = forwardTo;
 
@@ -35,10 +37,11 @@ public class UrlRepository : IUrlRepository
 
     public async Task DeleteAsync(string shortName)
     {
+        var map = await _dbContext.UrlEntities.SingleOrDefaultAsync(m => m.ShortName == shortName);
+        if (map == null) return;
 
-        var map = await _dbContext.UrlEntities.SingleAsync(m => m.ShortName == shortName);
         _dbContext.UrlEntities.Remove(map);
-        
+
         await _dbContext.SaveChangesAsync();
     }
 

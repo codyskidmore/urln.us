@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
-using Microsoft.Extensions.Options;
 using Url.Api.Infrastructure;
 using Url.Api.Models;
 using Url.Api.Services;
@@ -17,16 +16,16 @@ public static class Put
                 IOutputCacheStore outputCacheStore, CancellationToken token) =>
             {
                 var result = await urlService.UpdateAsync(request);
+                if (result is null) return Results.NotFound();
+
                 await outputCacheStore.EvictByTagAsync(CacheConstants.TagName, token);
-                
-                return TypedResults.Ok(result.ToResponse());        
-                
+
+                return TypedResults.Ok(result.ToResponse());
             })
             .WithName(Name)
             .Produces<UrlMapResponse>()
             .Produces(StatusCodes.Status404NotFound);
-            // .Produces<ValidationFailureResponse>(StatusCodes.Status400BadRequest)
-            // .RequireAuthorization(AuthConstants.TrustedMemberPolicyName);
+        // .Produces<ValidationFailureResponse>(StatusCodes.Status400BadRequest)
 
         return app;
     }

@@ -16,7 +16,7 @@ public class ApiKeyMiddleware
             await _next(context);
             return;
         }
-        
+
         if (!context.Request.Headers.TryGetValue(AppConstants.ApiKeyHeaderName, out
                 var extractedApiKey))
         {
