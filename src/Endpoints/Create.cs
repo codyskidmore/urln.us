@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.OutputCaching;
 using Url.Api.Infrastructure;
 using Url.Api.Models;
 using Url.Api.Services;
-// using Microsoft.AspNetCore.OutputCaching;
-// using Url.Api.Data;
 
 namespace Url.Api.Endpoints;
 
