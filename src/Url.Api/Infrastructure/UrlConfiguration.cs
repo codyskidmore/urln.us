@@ -85,10 +85,10 @@ public static class UrlConfiguration
     {
       options.AddPolicy("corsPolicy", p =>
           {
-          p.WithOrigins("http://localhost:5001/", "https://localhost:5001/", "https://urln.us/")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        });
+            p.WithOrigins("http://localhost:5001/", "https://localhost:5001/", "https://urln.us/")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+          });
     });
 
     return services;
