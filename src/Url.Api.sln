@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Url.Api", "Url.Api\Url.Api.csproj", "{B402B7DF-D60A-4A88-B589-3F9CCE418B15}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Url.Api", "Url.Api\Url.Api.csproj", "{12599B1E-CE4C-470F-BC2C-83F307B8EF2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,8 +12,9 @@ Global
 		{B402B7DF-D60A-4A88-B589-3F9CCE418B15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B402B7DF-D60A-4A88-B589-3F9CCE418B15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B402B7DF-D60A-4A88-B589-3F9CCE418B15}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{B402B7DF-D60A-4A88-B589-3F9CCE418B15} = {941BC6D1-3049-43CA-9027-0E2D35B2F61B}
+		{12599B1E-CE4C-470F-BC2C-83F307B8EF2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12599B1E-CE4C-470F-BC2C-83F307B8EF2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12599B1E-CE4C-470F-BC2C-83F307B8EF2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12599B1E-CE4C-470F-BC2C-83F307B8EF2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
